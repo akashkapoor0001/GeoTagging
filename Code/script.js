@@ -15,6 +15,21 @@ function initMap() {
         mapTypeId: 'satellite'
     });
 
+        document.getElementById('city').addEventListener('click', function() {
+        let city = prompt('Please enter a city name:');
+        if (city) {
+            let geocoder = new google.maps.Geocoder();
+            geocoder.geocode({'address': city}, function(results, status) {
+                if (status === 'OK') {
+                    map.setCenter(results[0].geometry.location);
+                    map.setZoom(14);
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        }
+    });
+
     // Add markers with info windows
     markersData.forEach(markerData => {
         addMarker(map, markerData);
@@ -80,6 +95,27 @@ function addMarker(map, markerData) {
             infoWindow.open(map, marker);
         });
 }
+
+function handleFullscreenChange() {
+    const fullscreenElement = document.fullscreenElement || document.mozFullScreenElement ||
+        document.webkitFullscreenElement || document.msFullscreenElement;
+
+    if (fullscreenElement) {
+        // Adjust styling for full-screen mode
+        document.getElementById('switchView').style.left = '20px';
+        document.getElementById('city').style.left = '120px';
+    } else {
+        // Restore styling for normal mode
+        document.getElementById('switchView').style.left = '10px';
+        document.getElementById('city').style.left = '10px';
+    }
+}
+
+// Attach full-screen change event listener
+document.addEventListener('fullscreenchange', handleFullscreenChange);
+document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+document.addEventListener('msfullscreenchange', handleFullscreenChange);
 
 
 
